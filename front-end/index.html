@@ -1,0 +1,36 @@
+<!--
+Root of Application.  Runs Google API Module and then runs the bundle file created by webpack.
+-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="theme-color" content="blue">
+    <title>React Boilerplate</title>
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" href="content/icons/images/logo.png" type="image/x-icon"/>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <!-- Google Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', '', 'auto');
+    ga((tracker) => {
+      // console.log(tracker.get('clientId'), tracker.get('referrer'));
+    })
+    ga('send', 'timing', 'JS Dependencies', 'load', 3549);
+    </script>
+    <!-- End Google Analytics -->
+
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script type="text/javascript" src="bundle.js" charset="utf-8"></script>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "short_name": "React-Boilerplate",
+  "name": "React-Boilerplate",
+  "icons": [
+    {
+      "src":"",
+      "sizes": "",
+      "type": ""
+    }
+  ],
+  "background_color": "white",
+  "Theme_color": "blue",
+  "display": "standalone"
+}

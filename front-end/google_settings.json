@@ -1,0 +1,18 @@
+{
+  "client_id": "test",
+  "libraries": [
+    {
+      "name": "drive",
+      "version": "v3"
+    },
+    {
+      "name": "gmail",
+      "version": "v1"
+    }
+  ],
+  "scopes": [
+    "profile",
+    "email",
+    "openid"
+  ]
+}
