@@ -9,21 +9,27 @@ var store = require('configureStore').configure();
 // })
 
 import LandingPage from './LandingPage';
+import MatchPage from '../Match/MatchPage';
 
 const Root = () => {
-  return (
-    <Provider store={store}>
-      <Router>
-        <div>
-          <Route
-            exact
-            path="/"
-            component={LandingPage}
-          />
-        </div>
-      </Router>
-    </Provider>
-  )
+    return (
+        <Provider store={store}>
+            <Router>
+                <div>
+                    <Route
+                        exact
+                        path="/"
+                        component={LandingPage}
+                    />
+                    <Route
+                        exact
+                        path="/match"
+                        component={MatchPage}
+                    />
+                </div>
+            </Router>
+        </Provider>
+    )
 };
 
 export default Root;

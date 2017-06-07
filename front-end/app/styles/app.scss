@@ -3,3 +3,13 @@
 
 // Base variables
 @import "base/variables";
+
+//Application Styles
+@import "base/application";
+
+//Components
+@import "components/match";
+@import "components/match-information";
+@import "components/navigation";
+@import "components/notes";
+@import "components/questions";

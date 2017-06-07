@@ -1,1 +1,20 @@
-module.exports = {}
+module.exports = {
+    "currentMatch": {
+        "matchType": "singles or doubles",
+        "player1": {
+
+        },
+        "player2": {
+
+        },
+        "games": [
+            {
+                "questions": {
+                    "1": "answer",
+                    "notes": ""
+                }
+            }
+
+        ]
+    }
+}

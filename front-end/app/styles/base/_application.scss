@@ -1,0 +1,15 @@
+* {
+    margin: 0;
+    font-size: 100%;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+}
+
+@mixin phone-media-query {
+    @media only screen and (max-device-width : 600px) {
+        @content;
+    }
+}

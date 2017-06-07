@@ -1,7 +1,7 @@
 {
-  "name": "react-boilerplate",
+  "name": "TTWorld",
   "version": "1.0.0",
-  "description": "react-boilerplate",
+  "description": "TTWorld",
   "main": "index.js",
   "scripts": {
     "test": "karma start",

@@ -1,7 +1,7 @@
 //Main redux action file that imports all other action files and exports them for use with reducers
 
-import * as mainActions from './main';
+import * as matchActions from './match';
 
 export {
-  mainActions
+  matchActions
 };
