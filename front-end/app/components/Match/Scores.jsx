@@ -1,5 +1,9 @@
 import React from 'react';
 
+import Paper from 'material-ui/Paper';
+
+import service_ball from '../../../content/service-ball.png';
+
 class Scores extends React.Component {
     constructor(props) {
         super(props);
@@ -11,14 +15,25 @@ class Scores extends React.Component {
     }
     render() {
         return (
-            <div className="scores">
-                <div className="left-game-score"></div>
-                <div className="right-game-score"></div>
-                <div className="match-score">
-                    <div className="left-match-score"></div>
-                    <div className="right-match-score"></div>
+            <Paper zDepth={3} className="scores">
+                <div className="p1-scores">
+                    <div className="p1-game-score">
+                        0
+                    </div>
+                    <div className="p1-match-score">
+                        2
+                    </div>
+                    <img className="service-ball" src={service_ball} />
                 </div>
-            </div>
+                <div className="p2-scores">
+                    <div className="p2-game-score">
+                        1
+                    </div>
+                    <div className="p2-match-score">
+                        3
+                    </div>
+                </div>
+            </Paper>
         );
     }
 };

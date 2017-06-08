@@ -1,0 +1,22 @@
+.player-information {
+    width: 30%;
+    display: flex;
+    margin-top: 2%;
+}
+
+.player-data {
+    height: 100%;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+}
+
+.player1 {
+    margin-left: 5%;
+}
+
+.player2 {
+    margin-right: 5%;
+}

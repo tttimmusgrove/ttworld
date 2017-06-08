@@ -13,15 +13,18 @@ class Match extends React.Component {
         super(props);
 
         this.state = {
-            
+
         }
+    }
+    endGame() {
+        
     }
     render() {
         return (
             <div className="match">
                 <MatchInformation />
                 <Navigation />
-                <Questions />
+                <Questions endGame={this.endGame}/>
                 <Notes />
             </div>
         );

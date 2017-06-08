@@ -7,10 +7,9 @@ class MatchInformation extends React.Component {
   render() {
     return (
       <div className="match-information">
-        Match Information
-        <PlayerInfo />
+        <PlayerInfo player={1}/>
         <Scores />
-        <PlayerInfo />
+        <PlayerInfo player={2}/>
       </div>
     );
   }

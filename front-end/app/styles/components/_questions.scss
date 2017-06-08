@@ -1,5 +1,4 @@
 .questions {
-    background-color: green;
     width: 70%;
     height: 75%;
     position: absolute;
@@ -13,4 +12,26 @@
         height: 45%;
         top: 25%;
     }
+}
+
+.question-title {
+    margin: 5%;
+    font-size: 3vw;
+}
+
+.question-answer {
+    margin-left: 5%;
+    margin-bottom: 5%;
+    width: 42.5%;
+}
+
+.slider-description {
+    text-align: center;
+    font-size: 4rem;
+}
+
+.next-question-button {
+    position: relative;
+    left: 40%;
+    margin-top: 5%;
 }

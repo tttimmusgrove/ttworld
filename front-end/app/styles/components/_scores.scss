@@ -1,0 +1,53 @@
+.scores {
+    width: 30%;
+    height: 100%;
+    margin-top: 2%;
+    position: relative;
+    display: flex;
+}
+
+.p1-scores {
+    width: 50%;
+    position: relative;
+    height: 100%;
+    background-color: blue;
+}
+
+.p2-scores {
+    width: 50%;
+    position: relative;
+    height: 100%;
+    background-color: red;
+}
+
+.p1-game-score, .p2-game-score {
+    position: absolute;
+    color: white;
+    top: 30%;
+    left: 40%;
+    font-size: 3rem;
+}
+
+.p1-match-score {
+    position: absolute;
+    top: 5%;
+    right: 5%;
+    color: white;
+    font-size: 1rem;
+}
+
+.p2-match-score {
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    color: white;
+    font-size: 1rem;
+}
+
+.service-ball {
+    position: absolute;
+    bottom: 5%;
+    right: 5%;
+    height: 1rem;
+    width: 1rem;
+}

@@ -15,6 +15,7 @@
     "axios": "^0.16.1",
     "express": "^4.14.1",
     "lockr": "^0.8.4",
+    "material-ui": "^0.18.2",
     "node-uuid": "^1.4.7",
     "normalize-scss": "^6.0.0",
     "prop-types": "^15.5.6",
@@ -22,6 +23,7 @@
     "react-dom": "^15.5.3",
     "react-hot-loader": "^3.0.0-beta.6",
     "react-router-dom": "^4.1.0",
+    "react-tap-event-plugin": "^2.0.1",
     "redux-thunk": "^2.2.0",
     "socket.io": "^1.7.3",
     "socket.io-client": "^1.7.3"

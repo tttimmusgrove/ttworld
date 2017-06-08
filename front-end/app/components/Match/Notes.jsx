@@ -20,8 +20,8 @@ class Notes extends React.Component {
     render() {
         return (
             <div className="notes">
-                <h2>Notes</h2>
-                <textarea onChange={this.updatePointNotes} ref="pointNotes"></textarea>
+                <h2 className="notes-header">Point Notes</h2>
+                <textarea className="notes-box" onChange={this.updatePointNotes} ref="pointNotes" placeholder="Enter point notes"></textarea>
             </div>
         );
     }

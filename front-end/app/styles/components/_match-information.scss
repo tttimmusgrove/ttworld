@@ -1,8 +1,9 @@
 .match-information {
-    background-color: yellow;
     height: 25%;
-    width: 70%;
+    width: 85%;
     position: absolute;
     left: 0;
     top: 0;
+    display: flex;
+    justify-content: space-between;
 }
