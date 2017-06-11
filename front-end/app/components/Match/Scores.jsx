@@ -14,24 +14,43 @@ class Scores extends React.Component {
         }
     }
     render() {
+        var {server, scores, playerInformation} = this.props;
+
+        const renderServiceBall = () => {
+            var classNames = "service-ball ";
+            if(server == 1) {
+                classNames += "p1-server";
+            } else {
+                classNames += "p2-server";
+            }
+            return (
+                <img className={classNames} src={service_ball} />
+            )
+        }
+
         return (
             <Paper zDepth={3} className="scores">
                 <div className="p1-scores">
                     <div className="p1-game-score">
-                        0
+                        {scores[0].gameScore}
                     </div>
                     <div className="p1-match-score">
-                        2
+                        {scores[0].matchScore}
                     </div>
-                    <img className="service-ball" src={service_ball} />
+                    <h3 className="p1-rating">{playerInformation[0].rating}</h3>
+                    <h4 className="p1-record">{playerInformation[0].record}</h4>
+                    {server == 1 ? renderServiceBall() : ""}
                 </div>
                 <div className="p2-scores">
                     <div className="p2-game-score">
-                        1
+                        {scores[1].gameScore}
                     </div>
                     <div className="p2-match-score">
-                        3
+                        {scores[1].matchScore}
                     </div>
+                    <h3 className="p2-rating">{playerInformation[1].rating}</h3>
+                    <h4 className="p2-record">{playerInformation[1].record}</h4>
+                    {server == 2 ? renderServiceBall() : ""}
                 </div>
             </Paper>
         );

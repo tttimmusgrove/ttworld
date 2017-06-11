@@ -5,10 +5,12 @@ import Scores from './Scores';
 
 class MatchInformation extends React.Component {
   render() {
+    var {server, scores, playerInformation} = this.props;
+
     return (
       <div className="match-information">
         <PlayerInfo player={1}/>
-        <Scores />
+        <Scores server={server} scores={scores} playerInformation={playerInformation} />
         <PlayerInfo player={2}/>
       </div>
     );

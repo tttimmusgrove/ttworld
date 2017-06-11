@@ -4,19 +4,26 @@
     margin-top: 2%;
 }
 
-.player-data {
-    height: 100%;
-    width: 50%;
+.player-identity {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    height: 90%;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.player-name {
     text-align: center;
+    margin-top: 5%;
+    word-wrap: break-word;
 }
 
-.player1 {
-    margin-left: 5%;
-}
+@include small-phone-media-query {
+    .player-information {
+        width: 25%;
+    }
 
-.player2 {
-    margin-right: 5%;
+    .player-identity {
+        height: 80%;
+    }
 }

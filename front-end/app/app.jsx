@@ -9,6 +9,9 @@ import { AppContainer } from 'react-hot-loader';
 
 import Root from './components/Navigation/Root';
 
+import injectTapEventPlugin from 'react-tap-event-plugin';
+injectTapEventPlugin();
+
 //App scss import
 require('style-loader!css-loader!sass-loader!applicationStyles');
 

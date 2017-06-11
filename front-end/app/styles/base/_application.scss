@@ -9,7 +9,25 @@ body {
 }
 
 @mixin phone-media-query {
-    @media only screen and (max-device-width : 600px) {
+    @media only screen and (max-device-width : 710px) and (min-device-height : 500px) {
+        @content;
+    }
+}
+
+@mixin small-phone-media-query {
+    @media only screen and (max-device-width : 600px) and (min-device-height : 500px) {
+        @content;
+    }
+}
+
+@mixin very-small-phone-media-query {
+    @media only screen and (max-device-width : 400px) and (min-device-height : 500px) {
+        @content;
+    }
+}
+
+@mixin phone-landscape {
+    @media only screen and (max-device-height : 400px) {
         @content;
     }
 }

@@ -3,6 +3,9 @@ import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
 import Slider from 'material-ui/Slider';
+import Snackbar from 'material-ui/Snackbar';
+
+import questions from '../../api/questions';
 
 class Questions extends React.Component {
     constructor(props) {
@@ -10,133 +13,97 @@ class Questions extends React.Component {
 
         this.state = {
             step: 0,
-            questions: [
-                {
-                    question: "Who won the point?",
-                    step: 0,
-                    answers: [
-                        "Me",
-                        "Opponent"
-                    ]
-                },
-                {
-                    question: "Which shot the point finished on (serve, return, 3rd ball, 4th ball, ect)",
-                    step: 1,
-                    answers: [
-                        "Serve",
-                        "Serve Return",
-                        "3rd Ball",
-                        "4th Ball",
-                        "5th Ball",
-                        "6th Ball or greater"
-                    ]
-                },
-                {
-                    question: "Did winner WIN the point or did loser LOSE the point?",
-                    step: 2,
-                    answers: [
-                        "Winner WON",
-                        "Loser LOST"
-                    ]
-                },
-                {
-                    question: "What type of shot was point won or lost with?",
-                    step: 3,
-                    answers: [
-                        "Serve",
-                        "Serve Return",
-                        "Loop",
-                        "Smash",
-                        "Chop",
-                        "Lob",
-                        "Fish"
-                    ]
-                },
-                {
-                    question: "Backhand or forehand?",
-                    step: 4,
-                    answers: [
-                        "Backhand",
-                        "Forehand"
-                    ]
-                },
-                {
-                    question: "What type was the shot just before the last shot?",
-                    step: 5,
-                    answers: [
-                        "Serve",
-                        "Serve Return",
-                        "Loop",
-                        "Smash",
-                        "Chop",
-                        "Lob",
-                        "Fish"
-                    ]
-                },
-                {
-                    question: "Backhand or forehand?",
-                    step: 6,
-                    answers: [
-                        "Backhand",
-                        "Forehand"
-                    ]
-                },
-                {
-                    question: "If you won the point - was it a practiced combination/serve or was it improvised?",
-                    step: 7,
-                    answers: [
-                        "Practiced",
-                        "Improvised"
-                    ]
-                },
-                {
-                    question: "Effort Rating",
-                    step: 8,
-                    answers: [
-                        "1",
-                        "2",
-                        "3",
-                        "4",
-                        "5"
-                    ]
-                },
-                {
-                    question: "Technique Rating",
-                    step: 9,
-                    answers: [
-                        "1",
-                        "2",
-                        "3",
-                        "4",
-                        "5"
-                    ]
-                },
-                {
-                    question: "Emotional Scale",
-                    step: 10,
-                    answers: [
-                        "Too Calm",
-                        "Neutral",
-                        "Too Aggressive"
-                    ]
-                }
-            ],
+            questions: questions,
             sliderValue: 0.5,
-            sliderDescription: "Balanced"
+            sliderDescription: "Balanced",
+            selectedStarNumber: 0,
+            pointWinner: 1,
+            gamePoint: 0,
+            nextPointIndication: false
         }
 
         this.incrementStep = this.incrementStep.bind(this);
+        this.incrementStepSimple = this.incrementStepSimple.bind(this);
+        this.incrementStepBasic = this.incrementStepBasic.bind(this);
         this.handleSliderValue = this.handleSliderValue.bind(this);
     }
-    incrementStep() {
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.resetPoint && nextProps.resetPoint != this.props.resetPoint) {
+            this.setState({
+                step: 0
+            })
+        }
+    }
+    incrementStep(questionAnswer) {
         var step = this.state.step;
-        if(step < 10) {
+        var gamePoint = this.state.gamePoint;
+        if(step === 8 || step === 9) {
+            this.setState({
+                selectedStarNumber: questionAnswer+1
+            })
+            setTimeout(() => {
+                this.setState({
+                    step: ++step,
+                    selectedStarNumber: 0
+                })
+            }, 300)
+        } else if (step === 10) {
+            this.props.nextPoint(this.state.pointWinner, ++this.state.gamePoint);
+            this.setState({
+                nextPointIndication: true
+            })
+            setTimeout(() => {
+                this.setState({
+                    step: 0,
+                    gamePoint: ++gamePoint,
+                    nextPointIndication: false
+                })
+            }, 300)
+        } else if (step == 0) {
+            this.setState({
+                step: ++step,
+                pointWinner: questionAnswer
+            })
+        } else {
             this.setState({
                 step: ++step
             })
-        } else {
-            this.props.endGame();
         }
+    }
+    incrementStepSimple(questionAnswer) {
+        var step = this.state.step;
+        var gamePoint = this.state.gamePoint;
+        if (step === 6) {
+            this.props.nextPoint(this.state.pointWinner, ++this.state.gamePoint);
+            this.setState({
+                nextPointIndication: true
+            })
+            setTimeout(() => {
+                this.setState({
+                    step: 0,
+                    gamePoint: ++gamePoint,
+                    nextPointIndication: false
+                })
+            }, 300)
+        } else if (step == 0) {
+            this.setState({
+                step: ++step,
+                pointWinner: questionAnswer
+            })
+        } else {
+            this.setState({
+                step: ++step
+            })
+        }
+    }
+    incrementStepBasic(questionAnswer) {
+        var step = this.state.step;
+        var gamePoint = this.state.gamePoint;
+
+        this.props.nextPoint(questionAnswer, ++this.state.gamePoint);
+        this.setState({
+            gamePoint: ++gamePoint
+        })
     }
     handleSliderValue(event, value) {
         var sliderDescription = "";
@@ -157,40 +124,123 @@ class Questions extends React.Component {
         });
     }
     render() {
-        var {questions, step, sliderValue, sliderDescription} = this.state;
+        var {questions, step, sliderValue, sliderDescription, selectedStarNumber, nextPointIndication} = this.state;
+        var {questionComplexity} = this.props;
 
-        const renderQuestion = () => {
+        const renderQuestions = () => {
             return (
                 <h2 className="question-title">{questions[step].question}</h2>
             )
         }
 
-        const renderAnswers = () => {
+        const renderComplexAnswers = () => {
             var finalJSX = [];
             if(step >= 0 && step <=7) {
                 questions[step].answers.forEach((answer) => {
-                    finalJSX.push(<RaisedButton label={answer} onClick={this.incrementStep} key={answer} className="question-answer"/>)
+                    finalJSX.push(<RaisedButton label={answer} labelStyle={{fontSize: '2vw', width: '100%', padding: '0'}} onClick={() => {
+                        if(step == 0) {
+                            this.incrementStep(answer == "Me" ? 1 : 2);
+                        } else {
+                            this.incrementStep();
+                        }
+                    }} key={answer} className="question-answer"/>)
                 })
             } else if (step == 8 || step == 9) {
-                for(let i = 0; i<5; i++) {
-                    finalJSX.push(<FontIcon key={i} onClick={this.incrementStep} className="material-icons" style={{fontSize: '6rem', marginLeft: '5%'}}>star_border</FontIcon>)
+                for(let i = 0; i<selectedStarNumber; i++) {
+                    finalJSX.push(<FontIcon key={i} className="material-icons" style={{fontSize: '6rem', marginLeft: '5%'}}>star</FontIcon>)
+                }
+                for(let i = selectedStarNumber; i<5; i++) {
+                    finalJSX.push(<FontIcon key={i} onClick={() => this.incrementStep(i)} className="material-icons" style={{fontSize: '6rem', marginLeft: '5%'}}>star_border</FontIcon>)
                 }
             } else if (step == 10) {
                 finalJSX.push(
                     <div className="slider-container">
                         <Slider step={0.25} value={sliderValue} onChange={this.handleSliderValue} style={{width: '80%', marginLeft: '10%'}}/>
                         <p className="slider-description">{sliderDescription}</p>
-                        <RaisedButton className="next-question-button" label="Next Question" primary={true} onClick={this.incrementStep} />
+                        <RaisedButton className="next-question-button" label="Next Point" primary={true} onClick={this.incrementStep} />
+                        <Snackbar
+                          open={true}
+                          message="Add notes for point before clicking next point!"
+                          autoHideDuration={3000}
+                        />
                     </div>
                 )
             }
             return finalJSX;
         }
 
+        const renderSimpleAnswers = () => {
+            var finalJSX = [];
+            questions[step].answers.forEach((answer) => {
+                finalJSX.push(<RaisedButton label={answer} labelStyle={{fontSize: '2vw', width: '100%', padding: '0'}} onClick={() => {
+                    if(step == 0) {
+                        this.incrementStepSimple(answer == "Me" ? 1 : 2);
+                    } else {
+                        this.incrementStepSimple();
+                    }
+                }} key={answer} className="question-answer"/>)
+            })
+            return finalJSX;
+        }
+
+        const renderBasicAnswer = () => {
+            var finalJSX = [];
+            questions[step].answers.forEach((answer) => {
+                finalJSX.push(<RaisedButton label={answer} labelStyle={{fontSize: '2vw', width: '100%', padding: '0'}} onClick={() => {
+                    if(step == 0) {
+                        this.incrementStepBasic(answer == "Me" ? 1 : 2);
+                    } else {
+                        this.incrementStepBasic();
+                    }
+                }} key={answer} className="question-answer"/>)
+            })
+            return finalJSX;
+        }
+
+        const renderCorrectQuestionSet = () => {
+            if(questionComplexity == 1) {
+                return (
+                    <div>
+                        {renderQuestions()}
+                        {renderComplexAnswers()}
+                    </div>
+                )
+            } else if (questionComplexity == 2) {
+                return (
+                    <div>
+                        {renderQuestions()}
+                        {renderSimpleAnswers()}
+                    </div>
+                )
+            } else if (questionComplexity == 3) {
+                return (
+                    <div>
+                        {renderQuestions()}
+                        {renderBasicAnswer()}
+                    </div>
+                )
+            }
+        }
+
+        const renderNextPointIndication = () => {
+            return (
+                <h2 className="next-point-indication">Next Point</h2>
+            )
+        }
+
+        const renderCorrectScreen = () => {
+            var finalJSX = [];
+            if(nextPointIndication) {
+                finalJSX.push(<div>{renderNextPointIndication()}</div>)
+            } else {
+                finalJSX.push(<div>{renderCorrectQuestionSet()}</div>)
+            }
+            return finalJSX;
+        }
+
         return (
           <div className="questions">
-            {renderQuestion()}
-            {renderAnswers()}
+              {renderCorrectScreen()}
           </div>
         );
     }

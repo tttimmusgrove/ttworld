@@ -1,9 +1,22 @@
 .match-information {
-    height: 25%;
-    width: 85%;
+    height: 30%;
+    width: 90%;
     position: absolute;
     left: 0;
     top: 0;
     display: flex;
     justify-content: space-between;
+    margin-left: 5%;
+}
+
+@include small-phone-media-query {
+    .match-information {
+        width: 85%;
+    }
+}
+
+@include very-small-phone-media-query {
+    .match-information {
+        height: 25%;
+    }
 }
