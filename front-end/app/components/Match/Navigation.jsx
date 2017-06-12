@@ -24,6 +24,7 @@ class Navigation extends React.Component {
         this.toggleResetMatchDialog = this.toggleResetMatchDialog.bind(this);
         this.toggleEndMatchDialog = this.toggleEndMatchDialog.bind(this);
         this.handleQuestionComplexityChange = this.handleQuestionComplexityChange.bind(this);
+        this.changeGamesToWin = this.changeGamesToWin.bind(this);
         this.resetMatch = this.resetMatch.bind(this);
     }
     toggleGameSettings() {
@@ -44,6 +45,9 @@ class Navigation extends React.Component {
     handleQuestionComplexityChange(event, index, value) {
         this.props.changeQuestionComplexity(value);
     }
+    changeGamesToWin(event, index, value) {
+        this.props.changeGamesToWin(value);
+    }
     resetMatch() {
         this.props.resetMatch();
         this.setState({
@@ -52,7 +56,7 @@ class Navigation extends React.Component {
     }
     render() {
         var {gameSettingsOpen, resetMatchDialog, endMatchDialog} = this.state;
-        var {questionComplexity} = this.props;
+        var {questionComplexity, gamesToWin} = this.props;
 
         const gameSettingsActions = [
             <FlatButton
@@ -115,6 +119,14 @@ class Navigation extends React.Component {
                       <MenuItem value={1} primaryText="All Questions" />
                       <MenuItem value={2} primaryText="Simple Analysis" />
                       <MenuItem value={3} primaryText="No Analysis" />
+                    </SelectField>
+                    <SelectField
+                      floatingLabelText="Games Per Match"
+                      value={gamesToWin}
+                      onChange={this.changeGamesToWin}
+                    >
+                      <MenuItem value={3} primaryText="Best of 5" />
+                      <MenuItem value={4} primaryText="Best of 7" />
                     </SelectField>
                 </Dialog>
                 <Dialog

@@ -14,6 +14,7 @@ var store = require('configureStore').configure();
 
 import LandingPage from './LandingPage';
 import MatchPage from '../Match/MatchPage';
+import MatchAnalysis from '../MatchAnalysis/MatchAnalysis';
 
 const Root = () => {
     return (
@@ -30,6 +31,11 @@ const Root = () => {
                             exact
                             path="/match"
                             component={MatchPage}
+                        />
+                        <Route
+                            exact
+                            path="/matchAnalysis"
+                            component={MatchAnalysis}
                         />
                     </div>
                 </Router>

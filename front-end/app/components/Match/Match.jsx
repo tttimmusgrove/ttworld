@@ -3,6 +3,8 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {matchActions} from 'actions';
 
+import {withRouter} from 'react-router-dom';
+
 import MatchInformation from './MatchInformation';
 import Navigation from './Navigation';
 import Questions from './Questions';
@@ -39,7 +41,9 @@ class Match extends React.Component {
             }],
             betweenGames: false,
             questionComplexity: 1,
-            resetPoint: false
+            resetPoint: false,
+            gameWinner: 1,
+            gamesToWin: 3
         }
 
         this.nextPoint = this.nextPoint.bind(this);
@@ -47,16 +51,37 @@ class Match extends React.Component {
         this.nextGame = this.nextGame.bind(this);
         this.resetMatch = this.resetMatch.bind(this);
         this.changeQuestionComplexity = this.changeQuestionComplexity.bind(this);
+        this.changeGamesToWin = this.changeGamesToWin.bind(this);
     }
-    endGame() {
-        this.setState({
-            betweenGames: true
-        })
+    endGame(gameWinner) {
+        var scores = this.state.scores;
+        var winnerMatchScore = scores[gameWinner - 1].matchScore;
+        winnerMatchScore++;
+        if(winnerMatchScore == this.state.gamesToWin) {
+            this.nextGame(gameWinner)
+        } else {
+            this.setState({
+                betweenGames: true,
+                gameWinner: gameWinner
+            })
+        }
     }
-    nextGame() {
-        this.setState({
-            betweenGames: false
-        })
+    nextGame(matchWinner) {
+        var scores = this.state.scores;
+        var gameWinner = this.state.gameWinner;
+        scores[0].gameScore = 0;
+        scores[1].gameScore = 0;
+        scores[gameWinner-1].matchScore++;
+
+        if(scores[gameWinner - 1].matchScore == this.state.gamesToWin) {
+            this.endMatch()
+        } else {
+            this.setState({
+                betweenGames: false,
+                scores: scores
+            })
+        }
+
     }
     nextPoint(pointWinner, gamePoint) {
         var server = this.state.server;
@@ -72,7 +97,13 @@ class Match extends React.Component {
         }
 
         if(scores[pointWinner-1].gameScore > 10 && Math.abs(scores[0].gameScore - scores[1].gameScore) > 1) {
-            this.endGame();
+            var gameWinner;
+            if(scores[0].gameScore > scores[1].gameScore) {
+                gameWinner = 1
+            } else {
+                gameWinner = 2
+            }
+            this.endGame(gameWinner);
         }
 
         this.setState({
@@ -90,6 +121,11 @@ class Match extends React.Component {
                 resetPoint: false
             })
         }, 1000)
+    }
+    changeGamesToWin(value) {
+        this.setState({
+            gamesToWin: value
+        })
     }
     resetMatch() {
         var scores = this.state.scores;
@@ -109,8 +145,11 @@ class Match extends React.Component {
             })
         }, 1000)
     }
+    endMatch() {
+        this.props.history.push('/matchAnalysis');
+    }
     render() {
-        var {server, scores, playerInformation, betweenGames, questionComplexity, resetPoint} = this.state;
+        var {server, scores, playerInformation, betweenGames, questionComplexity, resetPoint, endMatch, gamesToWin} = this.state;
 
         const renderQuestionArea = () => {
             if(!betweenGames) {
@@ -127,7 +166,7 @@ class Match extends React.Component {
         return (
             <div className="match">
                 <MatchInformation server={server} scores={scores} playerInformation={playerInformation} />
-                <Navigation changeQuestionComplexity={this.changeQuestionComplexity} questionComplexity={questionComplexity} resetMatch={this.resetMatch}/>
+                <Navigation changeQuestionComplexity={this.changeQuestionComplexity} questionComplexity={questionComplexity} resetMatch={this.resetMatch} changeGamesToWin={this.changeGamesToWin} gamesToWin={gamesToWin} />
                 {renderQuestionArea()}
                 <Notes />
             </div>
@@ -135,8 +174,8 @@ class Match extends React.Component {
     }
 };
 
-export default connect(
+export default withRouter(connect(
     (state) => {
         return state;
     }
-)(Match);
+)(Match));
