@@ -18,57 +18,55 @@ class GameAnalysis extends React.Component {
             losingShotsChartObject: [],
             winningShotTypeChartObject: [],
             losingShotTypeChartObject: [],
-            slideIndex: 0
+            winningShotSideChartObject: [],
+            losingShotSideChartObject: [],
+            winningShotPracticedChartObject: [],
+            losingShotPracticedChartObject: [],
+            tabIndex: 0,
+            innerTabIndex: 0
         }
 
-        this.createShotCharts = this.createShotCharts.bind(this);
-        this.createShotTypeCharts = this.createShotTypeCharts.bind(this);
+        this.createChartObjects = this.createChartObjects.bind(this);
+        this.setChart = this.setChart.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
+        this.handleInnerTabChange = this.handleInnerTabChange.bind(this);
     }
     componentDidMount() {
         var gameAnswers = this.state.gameAnswers;
 
-        this.createShotCharts(gameAnswers);
-        this.createShotTypeCharts(gameAnswers);
-    }
-    createShotCharts(gameAnswers) {
-        var winningShots = [];
-        var winningShotsObject = [{
-            label: 'Serve', value: 0
-        }, {
-            label: 'Serve Return', value: 0
-        }, {
-            label: '3rd Ball', value: 0
-        }, {
-            label: '4th Ball', value: 0
-        }, {
-            label: '5th Ball', value: 0
-        }, {
-            label: '6th Ball or Greater', value: 0
-        }];
-        var winningShotsObjectFinal = [];
+        var shotsLabels = ['Serve', 'Serve Return', '3rd Ball', '4th Ball', '5th Ball', '6th Ball or Greater'];
+        var shotTypeLabels = ['Serve', 'Serve Return', 'Loop', 'Smash', 'Chop', 'Lob', 'Fish'];
+        var shotSideLabels = ['Backhand', 'Forehand'];
+        var practicedLabels = ['Practiced', 'Improvised'];
 
+        this.createChartObjects(gameAnswers, shotsLabels, 1, 1);
+        this.createChartObjects(gameAnswers, shotTypeLabels, 3, 2);
+        this.createChartObjects(gameAnswers, shotSideLabels, 4, 3);
+        this.createChartObjects(gameAnswers, practicedLabels, 7, 4);
+    }
+    createChartObjects(gameAnswers, labels, relatedQuestion, chartNumber) {
+        var winningShots = [];
+        var winningShotsObject = [];
         var losingShots = [];
-        var losingShotsObject = [{
-            label: 'Serve', value: 0
-        }, {
-            label: 'Serve Return', value: 0
-        }, {
-            label: '3rd Ball', value: 0
-        }, {
-            label: '4th Ball', value: 0
-        }, {
-            label: '5th Ball', value: 0
-        }, {
-            label: '6th Ball or Greater', value: 0
-        }];
+        var losingShotsObject = [];
+        for(let i = 0; i<labels.length; i++) {
+            winningShotsObject.push({
+                label: labels[i],
+                value: 0
+            })
+            losingShotsObject.push({
+                label: labels[i],
+                value: 0
+            })
+        }
+        var winningShotsObjectFinal = [];
         var losingShotsObjectFinal = [];
 
         gameAnswers.points.forEach((point) => {
-            if(point[0] == 0 && point[1] != undefined) {
-                winningShots.push(point[1])
-            } else if(point[0] == 1 && point[1] != undefined) {
-                losingShots.push(point[1])
+            if(point[0] == 0 && point[relatedQuestion] != undefined) {
+                winningShots.push(point[relatedQuestion])
+            } else if(point[0] == 1 && point[relatedQuestion] != undefined) {
+                losingShots.push(point[relatedQuestion])
             }
         });
 
@@ -81,7 +79,7 @@ class GameAnalysis extends React.Component {
             }
         }
         for(let i = 0; i<winningShotsObjectFinal.length; i++) {
-            winningShotsObjectFinal[i].value = winningShotsObjectFinal[i].value/winningShots.length*100
+            winningShotsObjectFinal[i].value = Math.round(winningShotsObjectFinal[i].value/winningShots.length*100)
         }
 
         losingShots.forEach((shot) => {
@@ -93,194 +91,91 @@ class GameAnalysis extends React.Component {
             }
         }
         for(let i = 0; i<losingShotsObjectFinal.length; i++) {
-            losingShotsObjectFinal[i].value = losingShotsObjectFinal[i].value/losingShots.length*100
+            losingShotsObjectFinal[i].value = Math.round(losingShotsObjectFinal[i].value/losingShots.length*100)
         }
 
-        this.setState({
-            winningShotsChartObject: winningShotsObjectFinal,
-            losingShotsChartObject: losingShotsObjectFinal
-        })
+        this.setChart(chartNumber, winningShotsObjectFinal, losingShotsObjectFinal);
     }
-    createShotTypeCharts(gameAnswers) {
-        var winningShots = [];
-        var winningShotsObject = [{
-            label: 'Serve', value: 0
-        }, {
-            label: 'Serve Return', value: 0
-        }, {
-            label: 'Loop', value: 0
-        }, {
-            label: 'Smash', value: 0
-        }, {
-            label: 'Chop', value: 0
-        }, {
-            label: 'Lob', value: 0
-        }, {
-            label: 'Fish', value: 0
-        }];
-        var winningShotsObjectFinal = [];
-
-        var losingShots = [];
-        var losingShotsObject = [{
-            label: 'Serve', value: 0
-        }, {
-            label: 'Serve Return', value: 0
-        }, {
-            label: 'Loop', value: 0
-        }, {
-            label: 'Smash', value: 0
-        }, {
-            label: 'Chop', value: 0
-        }, {
-            label: 'Lob', value: 0
-        }, {
-            label: 'Fish', value: 0
-        }];
-        var losingShotsObjectFinal = [];
-
-        gameAnswers.points.forEach((point) => {
-            if(point[0] == 0 && point[3] != undefined) {
-                winningShots.push(point[3])
-            } else if(point[0] == 1 && point[3] != undefined) {
-                losingShots.push(point[3])
-            }
-        });
-
-        winningShots.forEach((shot) => {
-            winningShotsObject[shot].value++;
-        })
-        for(let i = 0; i<winningShotsObject.length; i++) {
-            if(winningShotsObject[i].value != 0) {
-                winningShotsObjectFinal.push(winningShotsObject[i]);
-            }
+    setChart(chartNumber, winningShotsObjectFinal, losingShotsObjectFinal) {
+        if(chartNumber == 1) {
+            this.setState({
+                winningShotsChartObject: winningShotsObjectFinal,
+                losingShotsChartObject: losingShotsObjectFinal
+            })
+        } else if (chartNumber == 2) {
+            this.setState({
+                winningShotTypeChartObject: winningShotsObjectFinal,
+                losingShotTypeChartObject: losingShotsObjectFinal
+            })
+        } else if (chartNumber == 3) {
+            this.setState({
+                winningShotSideChartObject: winningShotsObjectFinal,
+                losingShotSideChartObject: losingShotsObjectFinal
+            })
+        } else if (chartNumber == 4) {
+            this.setState({
+                winningShotPracticedChartObject: winningShotsObjectFinal,
+                losingShotPracticedChartObject: losingShotsObjectFinal
+            })
         }
-        for(let i = 0; i<winningShotsObjectFinal.length; i++) {
-            winningShotsObjectFinal[i].value = winningShotsObjectFinal[i].value/winningShots.length*100
-        }
-
-        losingShots.forEach((shot) => {
-            losingShotsObject[shot].value++;
-        })
-        for(let i = 0; i<losingShotsObject.length; i++) {
-            if(losingShotsObject[i].value != 0) {
-                losingShotsObjectFinal.push(losingShotsObject[i])
-            }
-        }
-        for(let i = 0; i<losingShotsObjectFinal.length; i++) {
-            losingShotsObjectFinal[i].value = losingShotsObjectFinal[i].value/losingShots.length*100
-        }
-
-        this.setState({
-            winningShotTypeChartObject: winningShotsObjectFinal,
-            losingShotTypeChartObject: losingShotsObjectFinal
-        })
     }
     handleTabChange(value) {
         this.setState({
-            slideIndex: value
+            tabIndex: value
+        })
+    }
+    handleInnerTabChange(value) {
+        this.setState({
+            innerTabIndex: value
         })
     }
     render() {
-        var {winningShotsChartObject, losingShotsChartObject, winningShotTypeChartObject, losingShotTypeChartObject, slideIndex} = this.state;
+        var {winningShotsChartObject, losingShotsChartObject, winningShotTypeChartObject, losingShotTypeChartObject, winningShotSideChartObject, losingShotSideChartObject, winningShotPracticedChartObject, losingShotPracticedChartObject, tabIndex, innerTabIndex} = this.state;
 
-        const renderChartTabs = () => {
-            var finalJSX = [];
+        var outerTabIndex = 0;
+
+        const renderInnerTabs = (winningChartObject, losingChartObject, chartLabels) => {
             var tabValue = 0;
-
-            if(winningShotsChartObject.length > 0) {
-                finalJSX.push(
-                    <Tab label="Winning Shots" value={tabValue} >
-                        {renderWinningShotsChart()}
-                    </Tab>
-                )
-                tabValue++;
-            }
-            if(losingShotsChartObject.length > 0) {
-                finalJSX.push(
-                    <Tab label="Losing Shots" value={tabValue} >
-                        {renderLosingShotsChart()}
-                    </Tab>
-                )
-                tabValue++;
-            }
-            if(winningShotTypeChartObject.length > 0) {
-                finalJSX.push(
-                    <Tab label="Winning Shot Types" value={tabValue} >
-                        {renderWinningShotTypeChart()}
-                    </Tab>
-                )
-                tabValue++;
-            }
-            if(losingShotTypeChartObject.length > 0) {
-                finalJSX.push(
-                    <Tab label="Losing Shot Types" value={tabValue} >
-                        {renderLosingShotTypeChart()}
-                    </Tab>
-                )
-                tabValue++;
-            }
-            finalJSX.push(
-                <Tab label="Suggestions" value={tabValue} >
-                    <div>
-                        <p>Here are some suggestions to improve next game</p>
-                    </div>
-                </Tab>
+            return (
+                <Tabs
+                    onChange={this.handleInnerTabChange}
+                    value={innerTabIndex}
+                >
+                    {renderInnerTab(winningChartObject, chartLabels[0], tabValue++)}
+                    {renderInnerTab(losingChartObject, chartLabels[1], tabValue++)}
+                </Tabs>
             )
-
-            return finalJSX;
         }
 
-        const renderWinningShotsChart = () => {
-            if(winningShotsChartObject.length > 0) {
+        const renderInnerTab = (chartObject, chartLabel, tabValue) => {
+            if(chartObject.length > 0 && chartLabel != undefined) {
                 return (
-                    <PieChart
-                      data={winningShotsChartObject}
-                      width={300}
-                      height={300}
-                      radius={100}
-                      innerRadius={20}
-                    />
+                    <Tab label={chartLabel} value={tabValue} >
+                        {renderPieChart(chartObject)}
+                    </Tab>
                 )
             }
         }
 
-        const renderLosingShotsChart = () => {
-            if(losingShotsChartObject.length > 0) {
+        const renderOuterTab = (winningChartObject, losingChartObject, outerLabel, innerLabels) => {
+            if(winningChartObject.length > 0 || losingChartObject.length > 0) {
                 return (
-                    <PieChart
-                      data={losingShotsChartObject}
-                      width={300}
-                      height={300}
-                      radius={100}
-                      innerRadius={20}
-                    />
+                    <Tab label={outerLabel} value={outerTabIndex++} >
+                        {renderInnerTabs(winningChartObject, losingChartObject, innerLabels)}
+                    </Tab>
                 )
             }
         }
 
-        const renderWinningShotTypeChart = () => {
-            if(winningShotTypeChartObject.length > 0) {
+        const renderPieChart = (chartObject) => {
+            if(chartObject.length > 0) {
                 return (
                     <PieChart
-                      data={winningShotTypeChartObject}
-                      width={300}
-                      height={300}
-                      radius={100}
-                      innerRadius={20}
-                    />
-                )
-            }
-        }
-
-        const renderLosingShotTypeChart = () => {
-            if(losingShotTypeChartObject.length > 0) {
-                return (
-                    <PieChart
-                      data={losingShotTypeChartObject}
-                      width={300}
-                      height={300}
-                      radius={100}
-                      innerRadius={20}
+                      data={chartObject}
+                      width={500}
+                      height={250}
+                      radius={75}
+                      innerRadius={15}
                     />
                 )
             }
@@ -290,9 +185,15 @@ class GameAnalysis extends React.Component {
             <div className="game-analysis">
                 <Tabs
                   onChange={this.handleTabChange}
-                  value={slideIndex}
+                  value={tabIndex}
                 >
-                    {renderChartTabs()}
+                    {renderOuterTab(winningShotsChartObject, losingShotsChartObject, 'Shots', ['Winning Shots', 'Losing Shots'])}
+                    {renderOuterTab(winningShotTypeChartObject, losingShotTypeChartObject, 'Shot Types', ['Winning Shot Types', 'Losing Shot Types'])}
+                    {renderOuterTab(winningShotSideChartObject, losingShotSideChartObject, 'Shot Side', ['Winning Shot Sides', 'Losing Shot Sides'])}
+                    {renderOuterTab(winningShotPracticedChartObject, losingShotPracticedChartObject, 'Practiced?', ['Winning Shot Practiced'])}
+                    <Tab label="Suggestions" value={outerTabIndex} >
+                        <p>Here are some suggestions to improve next game</p>
+                    </Tab>
                 </Tabs>
                 <RaisedButton className="next-game-button" label="Start Next Game" primary={true} fullWidth={true} onClick={this.props.nextGame} />
             </div>
