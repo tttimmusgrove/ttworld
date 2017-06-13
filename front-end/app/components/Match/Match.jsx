@@ -39,6 +39,8 @@ class Match extends React.Component {
                 rating: 1950,
                 record: "2-1"
             }],
+            pointInGame: 1,
+            gameInMatch: 1,
             betweenGames: false,
             questionComplexity: 1,
             resetPoint: false,
@@ -52,6 +54,9 @@ class Match extends React.Component {
         this.resetMatch = this.resetMatch.bind(this);
         this.changeQuestionComplexity = this.changeQuestionComplexity.bind(this);
         this.changeGamesToWin = this.changeGamesToWin.bind(this);
+    }
+    componentDidMount() {
+        this.props.dispatch(matchActions.startMatch(this.state.playerInformation));
     }
     endGame(gameWinner) {
         var scores = this.state.scores;
@@ -73,12 +78,16 @@ class Match extends React.Component {
         scores[1].gameScore = 0;
         scores[gameWinner-1].matchScore++;
 
+        this.props.dispatch(matchActions.addGame(gameWinner-1, ++this.state.gameInMatch));
+
         if(scores[gameWinner - 1].matchScore == this.state.gamesToWin) {
             this.endMatch()
         } else {
             this.setState({
                 betweenGames: false,
-                scores: scores
+                scores: scores,
+                gameInMatch: ++this.state.gameInMatch,
+                pointInGame: 1
             })
         }
 
@@ -106,9 +115,12 @@ class Match extends React.Component {
             this.endGame(gameWinner);
         }
 
+        this.props.dispatch(matchActions.addPoint(pointWinner-1, this.state.gameInMatch-1));
+
         this.setState({
             server: server,
-            scores: scores
+            scores: scores,
+            pointInGame: ++this.state.pointInGame
         })
     }
     changeQuestionComplexity(value) {
@@ -149,16 +161,16 @@ class Match extends React.Component {
         this.props.history.push('/matchAnalysis');
     }
     render() {
-        var {server, scores, playerInformation, betweenGames, questionComplexity, resetPoint, endMatch, gamesToWin} = this.state;
+        var {server, scores, playerInformation, betweenGames, questionComplexity, resetPoint, endMatch, gamesToWin, gameInMatch, pointInGame} = this.state;
 
         const renderQuestionArea = () => {
             if(!betweenGames) {
                 return (
-                    <Questions endGame={this.endGame} nextPoint={this.nextPoint} questionComplexity={questionComplexity} resetPoint={resetPoint} />
+                    <Questions endGame={this.endGame} nextPoint={this.nextPoint} questionComplexity={questionComplexity} resetPoint={resetPoint} gameInMatch={gameInMatch} pointInGame={pointInGame} />
                 )
             } else {
                 return (
-                    <GameAnalysis nextGame={this.nextGame} />
+                    <GameAnalysis nextGame={this.nextGame} gameInMatch={gameInMatch} />
                 )
             }
         }

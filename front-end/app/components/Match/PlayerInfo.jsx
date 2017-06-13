@@ -2,8 +2,8 @@ import React from 'react';
 
 import Avatar from 'material-ui/Avatar';
 
-import person1 from '../../../content/person1.png';
-import person2 from '../../../content/person2.jpg';
+import person1 from '../../../content/ma-long.jpg';
+import person2 from '../../../content/fan-zhendong.jpg';
 
 class PlayerInfo extends React.Component {
   render() {
@@ -22,7 +22,7 @@ class PlayerInfo extends React.Component {
                       height: '100%'
                   }}
               />
-              <h2 className="player-name">{player == 1 ? "Player 1" : "Player 2"}</h2>
+              <h2 className="player-name">{player == 1 ? "Guest" : "Opponent"}</h2>
           </div>
       </div>
     );

@@ -1,5 +1,7 @@
 import React from 'react';
 
+import SpeechRecognition from 'react-speech-recognition'
+
 class Notes extends React.Component {
     constructor(props) {
         super(props);
@@ -21,7 +23,7 @@ class Notes extends React.Component {
         return (
             <div className="notes">
                 <h2 className="notes-header">Point Notes</h2>
-                <textarea className="notes-box" onChange={this.updatePointNotes} ref="pointNotes" placeholder="Enter point notes"></textarea>
+                <textarea className="notes-box" onChange={this.updatePointNotes} ref="pointNotes" placeholder="Enter point notes"  ></textarea>
             </div>
         );
     }

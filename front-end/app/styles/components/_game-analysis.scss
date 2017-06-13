@@ -1,8 +1,19 @@
 .game-analysis {
     width: 70%;
-    height: 70%;
+    height: 65%;
     position: absolute;
     left: 0;
+    bottom: 0;
+}
+
+.rd3-basic-chart {
+    width: 50%;
+    position: relative;
+    left: 25%;
+}
+
+.next-game-button {
+    position: absolute;
     bottom: 0;
 }
 

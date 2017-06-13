@@ -1,5 +1,8 @@
 import React from 'react';
 
+import {connect} from 'react-redux';
+import {matchActions} from 'actions';
+
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
 import Slider from 'material-ui/Slider';
@@ -125,7 +128,7 @@ class Questions extends React.Component {
     }
     render() {
         var {questions, step, sliderValue, sliderDescription, selectedStarNumber, nextPointIndication} = this.state;
-        var {questionComplexity} = this.props;
+        var {questionComplexity, gameInMatch, pointInGame} = this.props;
 
         const renderQuestions = () => {
             return (
@@ -136,11 +139,13 @@ class Questions extends React.Component {
         const renderComplexAnswers = () => {
             var finalJSX = [];
             if(step >= 0 && step <=7) {
-                questions[step].answers.forEach((answer) => {
+                questions[step].answers.forEach((answer, i) => {
                     finalJSX.push(<RaisedButton label={answer} labelStyle={{fontSize: '2vw', width: '100%', padding: '0'}} onClick={() => {
                         if(step == 0) {
+                            this.props.dispatch(matchActions.addAnswer(pointInGame-1, gameInMatch-1, step, i))
                             this.incrementStep(answer == "Me" ? 1 : 2);
                         } else {
+                            this.props.dispatch(matchActions.addAnswer(pointInGame-1, gameInMatch-1, step, i))
                             this.incrementStep();
                         }
                     }} key={answer} className="question-answer"/>)
@@ -150,14 +155,20 @@ class Questions extends React.Component {
                     finalJSX.push(<FontIcon key={i} className="material-icons" style={{fontSize: '6rem', marginLeft: '5%'}}>star</FontIcon>)
                 }
                 for(let i = selectedStarNumber; i<5; i++) {
-                    finalJSX.push(<FontIcon key={i} onClick={() => this.incrementStep(i)} className="material-icons" style={{fontSize: '6rem', marginLeft: '5%'}}>star_border</FontIcon>)
+                    finalJSX.push(<FontIcon key={i} onClick={() => {
+                        this.props.dispatch(matchActions.addAnswer(pointInGame-1, gameInMatch-1, step, i))
+                        this.incrementStep(i)
+                    }} className="material-icons" style={{fontSize: '6rem', marginLeft: '5%'}}>star_border</FontIcon>)
                 }
             } else if (step == 10) {
                 finalJSX.push(
                     <div className="slider-container">
                         <Slider step={0.25} value={sliderValue} onChange={this.handleSliderValue} style={{width: '80%', marginLeft: '10%'}}/>
                         <p className="slider-description">{sliderDescription}</p>
-                        <RaisedButton className="next-question-button" label="Next Point" primary={true} onClick={this.incrementStep} />
+                        <RaisedButton className="next-question-button" label="Next Point" primary={true} onClick={() => {
+                            this.props.dispatch(matchActions.addAnswer(pointInGame-1, gameInMatch-1, step, sliderValue))
+                            this.incrementStep()
+                        }} />
                         <Snackbar
                           open={true}
                           message="Add notes for point before clicking next point!"
@@ -171,11 +182,13 @@ class Questions extends React.Component {
 
         const renderSimpleAnswers = () => {
             var finalJSX = [];
-            questions[step].answers.forEach((answer) => {
+            questions[step].answers.forEach((answer, i) => {
                 finalJSX.push(<RaisedButton label={answer} labelStyle={{fontSize: '2vw', width: '100%', padding: '0'}} onClick={() => {
                     if(step == 0) {
+                        this.props.dispatch(matchActions.addAnswer(pointInGame-1, gameInMatch-1, step, i))
                         this.incrementStepSimple(answer == "Me" ? 1 : 2);
                     } else {
+                        this.props.dispatch(matchActions.addAnswer(pointInGame-1, gameInMatch-1, step, i))
                         this.incrementStepSimple();
                     }
                 }} key={answer} className="question-answer"/>)
@@ -185,11 +198,13 @@ class Questions extends React.Component {
 
         const renderBasicAnswer = () => {
             var finalJSX = [];
-            questions[step].answers.forEach((answer) => {
+            questions[step].answers.forEach((answer, i) => {
                 finalJSX.push(<RaisedButton label={answer} labelStyle={{fontSize: '2vw', width: '100%', padding: '0'}} onClick={() => {
                     if(step == 0) {
+                        this.props.dispatch(matchActions.addAnswer(pointInGame-1, gameInMatch-1, step, i))
                         this.incrementStepBasic(answer == "Me" ? 1 : 2);
                     } else {
+                        this.props.dispatch(matchActions.addAnswer(pointInGame-1, gameInMatch-1, step, i))
                         this.incrementStepBasic();
                     }
                 }} key={answer} className="question-answer"/>)
@@ -246,4 +261,8 @@ class Questions extends React.Component {
     }
 };
 
-export default Questions;
+export default connect(
+    (state) => {
+        return state;
+    }
+)(Questions);
