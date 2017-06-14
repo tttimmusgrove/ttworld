@@ -27,18 +27,7 @@ class Match extends React.Component {
                 gameScore: 0,
                 matchScore: 0
             }],
-            playerInformation: [{
-                player: 1,
-                name: "Player 1",
-                rating: 2000,
-                record: "1-0"
-            },
-            {
-                player: 2,
-                name: "Player 2",
-                rating: 1950,
-                record: "2-1"
-            }],
+            playerInformation: this.props.playerInformation,
             pointInGame: 1,
             gameInMatch: 1,
             betweenGames: false,
@@ -74,11 +63,13 @@ class Match extends React.Component {
     nextGame(matchWinner) {
         var scores = this.state.scores;
         var gameWinner = this.state.gameWinner;
+        var gameInMatch = this.state.gameInMatch;
+        gameInMatch++;
         scores[0].gameScore = 0;
         scores[1].gameScore = 0;
         scores[gameWinner-1].matchScore++;
 
-        this.props.dispatch(matchActions.addGame(gameWinner-1, ++this.state.gameInMatch));
+        this.props.dispatch(matchActions.addGame(gameWinner-1, gameInMatch));
 
         if(scores[gameWinner - 1].matchScore == this.state.gamesToWin) {
             this.endMatch()
@@ -86,7 +77,7 @@ class Match extends React.Component {
             this.setState({
                 betweenGames: false,
                 scores: scores,
-                gameInMatch: ++this.state.gameInMatch,
+                gameInMatch: gameInMatch,
                 pointInGame: 1
             })
         }
@@ -170,7 +161,7 @@ class Match extends React.Component {
                 )
             } else {
                 return (
-                    <GameAnalysis nextGame={this.nextGame} gameInMatch={gameInMatch} />
+                    <GameAnalysis nextGame={this.nextGame} gameInMatch={gameInMatch} questionComplexity={questionComplexity} />
                 )
             }
         }

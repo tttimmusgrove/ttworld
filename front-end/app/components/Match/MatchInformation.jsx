@@ -9,9 +9,9 @@ class MatchInformation extends React.Component {
 
     return (
       <div className="match-information">
-        <PlayerInfo player={1}/>
+        <PlayerInfo player={1} playerInformation={playerInformation[0]} />
         <Scores server={server} scores={scores} playerInformation={playerInformation} />
-        <PlayerInfo player={2}/>
+        <PlayerInfo player={2} playerInformation={playerInformation[1]} />
       </div>
     );
   }

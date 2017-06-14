@@ -7,6 +7,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import {Tabs, Tab} from 'material-ui/Tabs';
 
 import {PieChart} from 'react-d3';
+var BarChart = require('react-d3/barchart').BarChart;
 
 class GameAnalysis extends React.Component {
     constructor(props) {
@@ -22,11 +23,14 @@ class GameAnalysis extends React.Component {
             losingShotSideChartObject: [],
             winningShotPracticedChartObject: [],
             losingShotPracticedChartObject: [],
+            effortChartObject: [],
+            techniqueChartObject: [],
+            emotionsChartObject: [],
             tabIndex: 0,
             innerTabIndex: 0
         }
 
-        this.createChartObjects = this.createChartObjects.bind(this);
+        this.createPieChartObjects = this.createPieChartObjects.bind(this);
         this.setChart = this.setChart.bind(this);
         this.handleTabChange = this.handleTabChange.bind(this);
         this.handleInnerTabChange = this.handleInnerTabChange.bind(this);
@@ -38,13 +42,18 @@ class GameAnalysis extends React.Component {
         var shotTypeLabels = ['Serve', 'Serve Return', 'Loop', 'Smash', 'Chop', 'Lob', 'Fish'];
         var shotSideLabels = ['Backhand', 'Forehand'];
         var practicedLabels = ['Practiced', 'Improvised'];
+        var starLabels = ['1', '2', '3', '4', '5'];
+        var emotionsLabels = ['0.00', '0.25', '0.50', '0.75', '1.00'];
 
-        this.createChartObjects(gameAnswers, shotsLabels, 1, 1);
-        this.createChartObjects(gameAnswers, shotTypeLabels, 3, 2);
-        this.createChartObjects(gameAnswers, shotSideLabels, 4, 3);
-        this.createChartObjects(gameAnswers, practicedLabels, 7, 4);
+        this.createPieChartObjects(gameAnswers, shotsLabels, 1, 1);
+        this.createPieChartObjects(gameAnswers, shotTypeLabels, 3, 2);
+        this.createPieChartObjects(gameAnswers, shotSideLabels, 4, 3);
+        this.createPieChartObjects(gameAnswers, practicedLabels, 7, 4);
+        this.createBarChartObjects(gameAnswers, starLabels, 8, 5);
+        this.createBarChartObjects(gameAnswers, starLabels, 9, 6);
+        this.createBarChartObjects(gameAnswers, emotionsLabels, 10, 7);
     }
-    createChartObjects(gameAnswers, labels, relatedQuestion, chartNumber) {
+    createPieChartObjects(gameAnswers, labels, relatedQuestion, chartNumber) {
         var winningShots = [];
         var winningShotsObject = [];
         var losingShots = [];
@@ -96,6 +105,51 @@ class GameAnalysis extends React.Component {
 
         this.setChart(chartNumber, winningShotsObjectFinal, losingShotsObjectFinal);
     }
+    createBarChartObjects(gameAnswers, labels, relatedQuestion, chartNumber) {
+        var shots = [];
+        var shotsObject = [{
+            name: "Series A",
+            values: []
+        }];
+        for(let i = 0; i<labels.length; i++) {
+            shotsObject[0].values.push(
+                { "x": labels[i], "y":  0}
+            )
+        }
+        var shotsObjectFinal = [];
+
+        gameAnswers.points.forEach((point) => {
+            if(point[relatedQuestion] != undefined) {
+                shots.push(point[relatedQuestion])
+            }
+        });
+
+        shots.forEach((shot) => {
+            if(shot != undefined) {
+                if(chartNumber != 7) {
+                    shotsObject[0].values[shot].y++;
+                } else {
+                    if (shot == 0) {
+                        shotsObject[0].values[0].y++;
+                    } else if (shot == 0.25) {
+                        shotsObject[0].values[1].y++;
+                    } else if (shot == 0.5) {
+                        shotsObject[0].values[2].y++;
+                    } else if (shot == 0.75) {
+                        shotsObject[0].values[3].y++;
+                    } else if (shot == 1) {
+                        shotsObject[0].values[4].y++;
+                    }
+                }
+            }
+        })
+
+        for(let i = 0; i<shotsObject.length; i++) {
+            shotsObjectFinal.push(shotsObject[i]);
+        }
+
+        this.setChart(chartNumber, shotsObjectFinal);
+    }
     setChart(chartNumber, winningShotsObjectFinal, losingShotsObjectFinal) {
         if(chartNumber == 1) {
             this.setState({
@@ -117,6 +171,18 @@ class GameAnalysis extends React.Component {
                 winningShotPracticedChartObject: winningShotsObjectFinal,
                 losingShotPracticedChartObject: losingShotsObjectFinal
             })
+        } else if (chartNumber == 5) {
+            this.setState({
+                effortChartObject: winningShotsObjectFinal
+            })
+        } else if (chartNumber == 6) {
+            this.setState({
+                techniqueChartObject: winningShotsObjectFinal
+            })
+        } else if (chartNumber == 7) {
+            this.setState({
+                emotionsChartObject: winningShotsObjectFinal
+            })
         }
     }
     handleTabChange(value) {
@@ -130,24 +196,39 @@ class GameAnalysis extends React.Component {
         })
     }
     render() {
-        var {winningShotsChartObject, losingShotsChartObject, winningShotTypeChartObject, losingShotTypeChartObject, winningShotSideChartObject, losingShotSideChartObject, winningShotPracticedChartObject, losingShotPracticedChartObject, tabIndex, innerTabIndex} = this.state;
+        var {winningShotsChartObject, losingShotsChartObject, winningShotTypeChartObject, losingShotTypeChartObject, winningShotSideChartObject, losingShotSideChartObject, winningShotPracticedChartObject, losingShotPracticedChartObject, effortChartObject, techniqueChartObject, emotionsChartObject, tabIndex, innerTabIndex} = this.state;
+        var {questionComplexity} = this.props;
 
         var outerTabIndex = 0;
 
-        const renderInnerTabs = (winningChartObject, losingChartObject, chartLabels) => {
+        const renderInnerTabsPie = (winningChartObject, losingChartObject, chartLabels) => {
             var tabValue = 0;
             return (
                 <Tabs
                     onChange={this.handleInnerTabChange}
                     value={innerTabIndex}
                 >
-                    {renderInnerTab(winningChartObject, chartLabels[0], tabValue++)}
-                    {renderInnerTab(losingChartObject, chartLabels[1], tabValue++)}
+                    {renderInnerTabPie(winningChartObject, chartLabels[0], tabValue++)}
+                    {renderInnerTabPie(losingChartObject, chartLabels[1], tabValue++)}
                 </Tabs>
             )
         }
 
-        const renderInnerTab = (chartObject, chartLabel, tabValue) => {
+        const renderInnerTabsBar = (effortChartObject, techniqueChartObject, emotionChartObject, chartLabels) => {
+            var tabValue = 0;
+            return (
+                <Tabs
+                    onChange={this.handleInnerTabChange}
+                    value={innerTabIndex}
+                >
+                    {renderInnerTabBar(effortChartObject, chartLabels[0], tabValue++)}
+                    {renderInnerTabBar(techniqueChartObject, chartLabels[1], tabValue++)}
+                    {renderInnerTabBar(emotionChartObject, chartLabels[2], tabValue++)}
+                </Tabs>
+            )
+        }
+
+        const renderInnerTabPie = (chartObject, chartLabel, tabValue) => {
             if(chartObject.length > 0 && chartLabel != undefined) {
                 return (
                     <Tab label={chartLabel} value={tabValue} >
@@ -157,11 +238,31 @@ class GameAnalysis extends React.Component {
             }
         }
 
-        const renderOuterTab = (winningChartObject, losingChartObject, outerLabel, innerLabels) => {
+        const renderInnerTabBar = (chartObject, chartLabel, tabValue) => {
+            if(chartObject.length > 0 && chartLabel != undefined) {
+                return (
+                    <Tab label={chartLabel} value={tabValue} >
+                        {renderBarChart(chartObject)}
+                    </Tab>
+                )
+            }
+        }
+
+        const renderOuterTabPie = (winningChartObject, losingChartObject, outerLabel, innerLabels) => {
             if(winningChartObject.length > 0 || losingChartObject.length > 0) {
                 return (
                     <Tab label={outerLabel} value={outerTabIndex++} >
-                        {renderInnerTabs(winningChartObject, losingChartObject, innerLabels)}
+                        {renderInnerTabsPie(winningChartObject, losingChartObject, innerLabels)}
+                    </Tab>
+                )
+            }
+        }
+
+        const renderOuterTabBar = (effortChartObject, techniqueChartObject, emotionChartObject, outerLabel, innerLabels) => {
+            if(questionComplexity == 1) {
+                return (
+                    <Tab label={outerLabel} value={outerTabIndex++} >
+                        {renderInnerTabsBar(effortChartObject, techniqueChartObject, emotionChartObject, innerLabels)}
                     </Tab>
                 )
             }
@@ -181,16 +282,30 @@ class GameAnalysis extends React.Component {
             }
         }
 
+        const renderBarChart = (chartObject) => {
+            if(chartObject.length > 0) {
+                return (
+                    <BarChart
+                        data={chartObject}
+                        width={500}
+                        height={200}
+                        fill={'#3182bd'}
+                    />
+                )
+            }
+        }
+
         return (
             <div className="game-analysis">
                 <Tabs
                   onChange={this.handleTabChange}
                   value={tabIndex}
                 >
-                    {renderOuterTab(winningShotsChartObject, losingShotsChartObject, 'Shots', ['Winning Shots', 'Losing Shots'])}
-                    {renderOuterTab(winningShotTypeChartObject, losingShotTypeChartObject, 'Shot Types', ['Winning Shot Types', 'Losing Shot Types'])}
-                    {renderOuterTab(winningShotSideChartObject, losingShotSideChartObject, 'Shot Side', ['Winning Shot Sides', 'Losing Shot Sides'])}
-                    {renderOuterTab(winningShotPracticedChartObject, losingShotPracticedChartObject, 'Practiced?', ['Winning Shot Practiced'])}
+                    {renderOuterTabPie(winningShotsChartObject, losingShotsChartObject, 'Shots', ['Winning Shots', 'Losing Shots'])}
+                    {renderOuterTabPie(winningShotTypeChartObject, losingShotTypeChartObject, 'Shot Types', ['Winning Shot Types', 'Losing Shot Types'])}
+                    {renderOuterTabPie(winningShotSideChartObject, losingShotSideChartObject, 'Shot Side', ['Winning Shot Sides', 'Losing Shot Sides'])}
+                    {renderOuterTabPie(winningShotPracticedChartObject, losingShotPracticedChartObject, 'Practiced?', ['Winning Shot Practiced'])}
+                    {renderOuterTabBar(effortChartObject, techniqueChartObject, emotionsChartObject, 'Ratings', ['Effort', 'Technique', 'Emotional State'])}
                     <Tab label="Suggestions" value={outerTabIndex} >
                         <p>Here are some suggestions to improve next game</p>
                     </Tab>
