@@ -7,6 +7,9 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Checkbox from 'material-ui/Checkbox';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import IconMenu from 'material-ui/IconMenu';
+import IconButton from 'material-ui/IconButton';
+import FileFileDownload from 'material-ui/svg-icons/file/file-download';
 
 import CoinFlip from './CoinFlip';
 
@@ -30,7 +33,9 @@ class PreMatch extends React.Component {
             }],
             attemptedSubmit: false,
             server: 1,
-            coinFlip: false
+            coinFlip: false,
+            proMenuPlayer: false,
+            proMenuOpponent: false
         }
 
         this.handleMatchTypeChange = this.handleMatchTypeChange.bind(this);
@@ -40,6 +45,11 @@ class PreMatch extends React.Component {
         this.setServerCoin = this.setServerCoin.bind(this);
         this.toggleCoinFlip = this.toggleCoinFlip.bind(this);
         this.quickStart = this.quickStart.bind(this);
+        this.handleOpenProMenuPlayer = this.handleOpenProMenuPlayer.bind(this);
+        this.handlePlayerProChange = this.handlePlayerProChange.bind(this);
+        this.handleOpenProMenuOpponent = this.handleOpenProMenuOpponent.bind(this);
+        this.handleOpponentProChange = this.handleOpponentProChange.bind(this);
+        this.addProPlayer = this.addProPlayer.bind(this);
     }
     handleMatchTypeChange(event, index, value) {
         this.setState({
@@ -119,8 +129,53 @@ class PreMatch extends React.Component {
             this.props.startMatch(playerInformation, server);
         }, 500)
     }
+    handleOpenProMenuPlayer() {
+        this.setState({
+            proMenuPlayer: true
+        })
+    }
+    handlePlayerProChange(value) {
+        this.setState({
+            proMenuPlayer: value
+        })
+    }
+    handleOpenProMenuOpponent() {
+        this.setState({
+            proMenuOpponent: true
+        })
+    }
+    handleOpponentProChange(value) {
+        this.setState({
+            proMenuOpponent: value
+        })
+    }
+    addProPlayer(player, pro) {
+        var playerInformation = this.state.playerInformation;
+
+        if(pro == 1) {
+            playerInformation[player-1].name = "Ma Long";
+            playerInformation[player-1].rating = "3437";
+            playerInformation[player-1].record = "7-player (Jun)";
+        } else if (pro == 2) {
+            playerInformation[player-1].name = "Fan Zhendong";
+            playerInformation[player-1].rating = "3346";
+            playerInformation[player-1].record = "6-1 (Jun)";
+        } else if (pro == 3) {
+            playerInformation[player-1].name = "Xu Xin";
+            playerInformation[player-1].rating = "3129";
+            playerInformation[player-1].record = "5-1 (Jun)";
+        } else if (pro == 4) {
+            playerInformation[player-1].name = "Zhang Jike";
+            playerInformation[player-1].rating = "2953";
+            playerInformation[player-1].record = "2-1 (Jun)";
+        }
+
+        this.setState({
+            playerInformation: playerInformation
+        })
+    }
     render() {
-        var {matchType, playerInformation, attemptedSubmit, server, coinFlip} = this.state;
+        var {matchType, playerInformation, attemptedSubmit, server, coinFlip, proMenuPlayer, proMenuOpponent} = this.state;
 
         const coinFlipActions = [
             <FlatButton
@@ -152,18 +207,21 @@ class PreMatch extends React.Component {
                             floatingLabelText="Name"
                             errorText={attemptedSubmit && !playerInformation[0].name ? "This field is required" : ""}
                             onChange={(event) => this.handlePlayerInformation(event, 1)}
+                            value={playerInformation[0].name ? playerInformation[0].name : ""}
                         />
                         <br/>
                         <TextField
                             floatingLabelText="Rating"
                             errorText={attemptedSubmit && !playerInformation[0].rating ? "This field is required" : ""}
                             onChange={(event) => this.handlePlayerInformation(event, 2)}
+                            value={playerInformation[0].rating ? playerInformation[0].rating : ""}
                         />
                         <br/>
                         <TextField
                             floatingLabelText="Record"
                             errorText={attemptedSubmit && !playerInformation[0].record ? "This field is required" : ""}
                             onChange={(event) => this.handlePlayerInformation(event, 3)}
+                            value={playerInformation[0].record ? playerInformation[0].record : ""}
                         />
                         <Checkbox
                           label="Initial Server"
@@ -172,6 +230,16 @@ class PreMatch extends React.Component {
                           checked={server == 1 ? true : false}
                         />
                         <RaisedButton label="Flip A Coin" onTouchTap={this.toggleCoinFlip} primary={true} className="flip-for-server" />
+                        <IconMenu
+                          iconButtonElement={<RaisedButton onTouchTap={this.handleOpenProMenuPlayer} label="Play As a Pro" />}
+                          open={proMenuPlayer}
+                          onRequestChange={this.handlePlayerProChange}
+                        >
+                          <MenuItem value="1" primaryText="Ma Long" onClick={() => this.addProPlayer(1, 1)} />
+                          <MenuItem value="2" primaryText="Fan Zhendong" onClick={() => this.addProPlayer(1, 2)} />
+                          <MenuItem value="3" primaryText="Xu Xin" onClick={() => this.addProPlayer(1, 3)} />
+                          <MenuItem value="4" primaryText="Zhang Jike" onClick={() => this.addProPlayer(1, 4)} />
+                        </IconMenu>
                     </div>
                     <div className="pre-match-opponent-information">
                         <h2 className="pre-match-opponent-information-header">Opponent Information</h2>
@@ -179,18 +247,21 @@ class PreMatch extends React.Component {
                             floatingLabelText="Name"
                             errorText={attemptedSubmit && !playerInformation[1].name ? "This field is required" : ""}
                             onChange={(event) => this.handlePlayerInformation(event, 4)}
+                            value={playerInformation[1].name ? playerInformation[1].name : ""}
                         />
                         <br/>
                         <TextField
                             floatingLabelText="Rating"
                             errorText={attemptedSubmit && !playerInformation[1].rating ? "This field is required" : ""}
                             onChange={(event) => this.handlePlayerInformation(event, 5)}
+                            value={playerInformation[1].rating ? playerInformation[1].rating : ""}
                         />
                         <br/>
                         <TextField
                             floatingLabelText="Record"
                             errorText={attemptedSubmit && !playerInformation[1].record ? "This field is required" : ""}
                             onChange={(event) => this.handlePlayerInformation(event, 6)}
+                            value={playerInformation[1].record ? playerInformation[1].record : ""}
                         />
                         <Checkbox
                           label="Initial Server"
@@ -198,6 +269,16 @@ class PreMatch extends React.Component {
                           disabled={server == 1 ? true : false}
                           checked={server == 2 ? true : false}
                         />
+                        <IconMenu
+                          iconButtonElement={<RaisedButton onTouchTap={this.handleOpenProMenuOpponent} label="Play Against a Pro" />}
+                          open={proMenuOpponent}
+                          onRequestChange={this.handleOpponentProChange}
+                        >
+                          <MenuItem value="1" primaryText="Ma Long" onClick={() => this.addProPlayer(2, 1)} />
+                          <MenuItem value="2" primaryText="Fan Zhendong" onClick={() => this.addProPlayer(2, 2)} />
+                          <MenuItem value="3" primaryText="Xu Xin" onClick={() => this.addProPlayer(2, 3)} />
+                          <MenuItem value="4" primaryText="Zhang Jike" onClick={() => this.addProPlayer(2, 4)} />
+                        </IconMenu>
                     </div>
                 </div>
                  <RaisedButton className="start-match" label="Start Match" fullWidth={true} primary={true} onClick={this.startMatch}/>
@@ -207,7 +288,7 @@ class PreMatch extends React.Component {
                    onRequestClose={this.toggleCoinFlip}
                    style={{height: '30%'}}
                  >
-                   <CoinFlip server={server} setServer={this.setServerCoin}/>
+                   <CoinFlip server={server} setServer={this.setServerCoin} />
                  </Dialog>
             </div>
         );
