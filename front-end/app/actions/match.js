@@ -34,10 +34,3 @@ export var addAnswer = (pointInGame, gameInMatch, question, answer) => {
         answer
     }
 }
-
-export var setInitialServer = (player) => {
-    return {
-        type: "SET_INITIAL_SERVER",
-        player
-    }
-}

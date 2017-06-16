@@ -16,7 +16,7 @@ class Match extends React.Component {
         super(props);
 
         this.state = {
-            server: 1,
+            server: this.props.initialServer,
             scores: [{
                 player: 1,
                 gameScore: 0,
@@ -34,7 +34,8 @@ class Match extends React.Component {
             questionComplexity: 1,
             resetPoint: false,
             gameWinner: 1,
-            gamesToWin: 3
+            gamesToWin: 3,
+            initialServer: this.props.initialServer
         }
 
         this.nextPoint = this.nextPoint.bind(this);
@@ -64,6 +65,10 @@ class Match extends React.Component {
         var scores = this.state.scores;
         var gameWinner = this.state.gameWinner;
         var gameInMatch = this.state.gameInMatch;
+        var server = this.state.server;
+        var initialServer = this.state.initialServer;
+        initialServer = initialServer == 1 ? 2 : 1;
+
         gameInMatch++;
         scores[0].gameScore = 0;
         scores[1].gameScore = 0;
@@ -78,7 +83,9 @@ class Match extends React.Component {
                 betweenGames: false,
                 scores: scores,
                 gameInMatch: gameInMatch,
-                pointInGame: 1
+                pointInGame: 1,
+                server: initialServer,
+                initialServer: initialServer
             })
         }
 

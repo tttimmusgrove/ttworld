@@ -9,28 +9,30 @@ class MatchPage extends React.Component {
 
         this.state = {
             preMatchSettings: true,
-            playerInformation: undefined
+            playerInformation: undefined,
+            initialServer: 1
         }
 
         this.startMatch = this.startMatch.bind(this);
     }
-    startMatch(playerInformation) {
+    startMatch(playerInformation, server) {
         this.setState({
             preMatchSettings: false,
-            playerInformation: playerInformation
+            playerInformation: playerInformation,
+            initialServer: server
         })
     }
     render() {
-        var {preMatchSettings, playerInformation} = this.state;
+        var {preMatchSettings, playerInformation, initialServer} = this.state;
 
         const renderMatch = () => {
             if(preMatchSettings) {
                 return (
-                    <PreMatch startMatch={this.startMatch} />
+                    <PreMatch startMatch={this.startMatch} setInitialServer={this.setInitialServer} />
                 )
             } else {
                 return (
-                    <Match playerInformation={playerInformation} />
+                    <Match playerInformation={playerInformation} initialServer={initialServer} />
                 )
             }
         }

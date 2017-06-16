@@ -65,19 +65,6 @@ export var matchReducer = (state = {}, action) => {
                 scores: state.scores,
                 questionAnswers: questionAnswers
             }
-        case "SET_INITIAL_SERVER":
-            var questionAnswers = state.questionAnswers;
-
-            // console.log(questionAnswers, action.gameInMatch)
-
-            questionAnswers[action.gameInMatch].points[action.pointInGame].push("");
-            questionAnswers[action.gameInMatch].points[action.pointInGame][action.question] = action.answer;
-
-            return {
-                playerInformation: state.playerInformation,
-                scores: state.scores,
-                questionAnswers: questionAnswers
-            }
         default:
             return state
     }
